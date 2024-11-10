@@ -7,12 +7,8 @@ from .serializers import CategoryFAQSerializer, FAQSerializer, FeedbackSerialize
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
-from collections import Counter
-import string
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.shortcuts import render
-
 # Create a view to display the template
 def index(request):
     return render(request,'index.html')
@@ -75,7 +71,7 @@ class FAQListCreateView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        faq = serializer.save()
+        # faq = serializer.save()
         self.perform_create(serializer)
         if serializer.validated_data.get('category'):
             category = serializer.validated_data['category']
@@ -167,30 +163,31 @@ class FAQCategoryListView(generics.ListAPIView):
        
 
     
+# class RetrieveFeedbackView(generics.RetrieveAPIView):
+#     queryset = Feedback.objects.all()
+#     serializer_class = FeedbackSerializer
+
 class FeedbackListCreateView(generics.ListCreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    def get(self, request, pk):
+    def post(self, request, *args, **kwargs):
         try:
-            faq = FAQ.objects.get(id=pk)
-            feedback = Feedback.objects.filter(faq=faq)
-            serializer = self.serializer_class(feedback, many=True)
-            return Response({"feedback": serializer.data })
-        except FAQ.DoesNotExist:
-            return Response({"message": "faq does not exist" })
-
-    def post(self, request, pk):
-        try:
-            faq = FAQ.objects.get(id=pk)
-            serializer = self.serializer_class( data=request.data)
-            if serializer.is_valid():
-                serializer.save(faq=faq)
-                return Response({ "success": True, "message": "feedback added" })
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            if serializer.validated_data.get('faq'):
+                faq = serializer.validated_data['faq']
+                faq.Feedback_count = faq.feedback.count()
+                faq.save()
+                faq = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED
+                )
             else:
                 print(serializer.errors)
                 return Response({ "success": False, "message": "error adding feedback","errors":serializer.errors })
         except ObjectDoesNotExist:
             return Response({ "success": False, "message": "question does not exist" })
+
 class DestroyFeedbackView(generics.DestroyAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer        
@@ -199,9 +196,13 @@ class DestroyFeedbackView(generics.DestroyAPIView):
             pk = kwargs.get("pk")
             feedback = Feedback.objects.get(id=pk)
             self.perform_destroy(feedback)
+            faq = feedback.faq
+            faq.Feedback_count = max(0, faq.Feedback_count - 1)  
+            faq.save()
             return Response({ "success": True, "message": "Feedback deleted" })
         except ObjectDoesNotExist:
             return Response({ "success": False, "message": "Feedback does not exist" })
+
             
 class UpdateFeedbackView(generics.UpdateAPIView):
     queryset = Feedback.objects.all()
@@ -218,3 +219,25 @@ class UpdateFeedbackView(generics.UpdateAPIView):
             print(serializer.errors)
             return Response({ "success": False, "message": "error updating Feedback" })
         
+class FAQFeedbackView(generics.ListAPIView):
+    serializer_class = FAQSerializer
+    def get_queryset(self):
+        try:
+            faq = FAQ.objects.get(pk=self.kwargs['pk'])
+            feedback = Feedback.objects.filter(faq=faq)
+            return feedback
+        except FAQ.DoesNotExist:
+            return Response({"message": "faq does not exist" })
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        feedback_count = queryset.count()
+        serializer = FeedbackSerializer(queryset, many=True)
+        faq_instance = FAQ.objects.get(pk=self.kwargs['pk'])
+        faq_serializer = FAQSerializer(faq_instance)
+        response_data = [{
+            'faq':faq_serializer.data['question'],  
+            'feedback_count': feedback_count,
+            'feedbacks': serializer.data  
+        }]
+        
+        return Response(response_data, status=status.HTTP_200_OK)
