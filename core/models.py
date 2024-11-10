@@ -36,6 +36,7 @@ class FAQ(TimeStampedModel, NameModel):
     id = models.AutoField(primary_key=True)
     question = models.CharField(max_length=255)
     answer = models.TextField()
+    Feedback_count=models.PositiveIntegerField(default=0)
     category= models.ForeignKey(CategoryFAQ, related_name='faqs', on_delete=models.CASCADE)
     Tags = models.ManyToManyField(TagFAQ, related_name='tags', blank=True)
     def __str__(self):
