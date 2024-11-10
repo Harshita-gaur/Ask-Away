@@ -17,7 +17,7 @@ class FAQSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields ='__all__'
+        fields = '__all__'
         
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
