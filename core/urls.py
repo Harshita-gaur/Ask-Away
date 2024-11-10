@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import FAQFeedbackView, FAQListCreateView, FAQCategoryListView,DestroyFAQView,UpdateFAQView,RetrieveFAQView,CategoryListCreateView,DestroyCategoryView,UpdateCategoryView,RetrieveCategoryView,FeedbackListCreateView,DestroyFeedbackView,UpdateFeedbackView
+from .views import index,FAQFeedbackView, FAQListCreateView, FAQCategoryListView,DestroyFAQView,UpdateFAQView,RetrieveFAQView,CategoryListCreateView,DestroyCategoryView,UpdateCategoryView,RetrieveCategoryView,FeedbackListCreateView,DestroyFeedbackView,UpdateFeedbackView
 
 
 urlpatterns = [
