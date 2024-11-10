@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask and Answer</title>
+    <style>
+        /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Form Styles */
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input[type="submit"] {
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+input[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+
+/* Card Styles for Questions and Answers */
+.card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.card p {
+    color: #555;
+}
+
+/* Feedback Button */
+button.feedback-btn {
+    background-color: #f0ad4e;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.feedback-btn:hover {
+    background-color: #ec971f;
+}
+
+    </style>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Ask and Answer</h1>
+        <nav>
+            <ul>
+                <li><a href="#login">Login</a></li>
+                <li><a href="#ask-question">Ask Question</a></li>
+                <li><a href="#questions">Questions</a></li>
+                <li><a href="#profile">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Login Section -->
+    <section id="login">
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </section>
+
+    <!-- Ask Question Section -->
+    <section id="ask-question">
+        <h2>Ask a Question</h2>
+        <form action="/ask-question" method="POST">
+            <label for="question">Your Question</label>
+            <textarea id="question" name="question" rows="4" required></textarea>
+
+            <button type="submit">Ask Question</button>
+        </form>
+    </section>
+
+    <!-- Question List Section -->
+    <section id="questions">
+        <h2>Questions</h2>
+        <div class="question">
+            <h3>How to implement login in Django?</h3>
+            <p>Asked by <span class="username">John Doe</span></p>
+
+            <!-- Answer Section -->
+            <div class="answers">
+                <h4>Answers</h4>
+                <div class="answer">
+                    <p>First, you need to install Django and set up a user model. Then, use Django's built-in authentication system for login.</p>
+                    <button class="feedback">Give Feedback</button>
+                </div>
+            </div>
+
+            <!-- Follow User Section -->
+            <div class="follow-user">
+                <button class="follow">Follow User</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile">
+        <h2>Your Profile</h2>
+        <p>Username: <span id="username-display">JohnDoe</span></p>
+        <p>Questions Asked: 5</p>
+        <p>Questions Answered: 3</p>
+        <button>Log Out</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Ask and Answer</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
